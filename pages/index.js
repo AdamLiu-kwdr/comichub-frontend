@@ -5,7 +5,7 @@ import styles from '@/styles/Home.module.css'
 
 const inter = Inter({ subsets: ['latin'] })
 
-export default function Home() {
+export default function Home({comics}) {
   return (
     <>
       <Head>
@@ -36,31 +36,55 @@ export default function Home() {
                   <h1>(your name here) 'w'</h1>
                   <h3>ComicHub is a website to show off all your comics! </h3>
                 </hgroup>
-                <a> <img src='/twitter_icon.png' width='24px'></img></a>
-                  <a> <img src='/tumblr_icon.png' width='24px'></img></a>
-                  <a> <img src='/instragram_icon.png' width='24px'></img></a>
-                  <a> <img src='/youtube_icon.png' width='24px'></img></a>
-                  <a> <img src='/facebook_icon.svg' width='24px'></img></a>
+                <ShowScoailMediaLists />
               </div>
             </div>
           </div>
         </div>
       </div>
       <main className='container'>
-        <div className='row'>
-          {[...Array(8).keys()].map((i) => (
-            <div key={i} className="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-              <a href="">
-                <article>
-                  <p>image placeholder </p>
-                  <h6>comic {i} </h6>
-                </article>
-              </a>
-            </div>
-          ))
-          }
-        </div>
+        <DisplayComics comics={comics} />
       </main>
     </>
   )
+}
+
+function ShowScoailMediaLists() {
+  return <>
+    <a> <img src='/twitter_icon.png' width='24px'></img></a>
+    <a> <img src='/tumblr_icon.png' width='24px'></img></a>
+    <a> <img src='/instragram_icon.png' width='24px'></img></a>
+    <a> <img src='/youtube_icon.png' width='24px'></img></a>
+    <a> <img src='/facebook_icon.svg' width='24px'></img></a>
+  </>
+}
+
+function DisplayComics({comics}) {
+  return <div className='row'>
+    {comics.map((comic) => (
+      <div key={comic.id} className={styles.comic + " col-xs-6 col-sm-6 col-md-4 col-lg-3"}>
+        <a href="">
+          <article>
+            <img src='/Comic.jpg'></img>
+            <h6>{comic.name}</h6>
+          </article>
+        </a>
+      </div>
+    ))
+    }
+  </div>
+}
+
+// Pre-renders index page for SEO and speed up index loading speed.
+export async function getStaticProps(){
+  // todo: read backend URL from env
+  const res = await fetch('http://localhost:5000/comic')
+  const comics = await res.json()
+
+  return {
+    props: {
+      comics,
+    },
+    revalidate: 10 // regenerate the page at most once pre 10 seconds
+  }
 }
