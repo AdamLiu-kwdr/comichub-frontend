@@ -5,48 +5,52 @@ import styles from '@/styles/Home.module.css'
 
 const inter = Inter({ subsets: ['latin'] })
 
-export default function Home({comics}) {
-  return (
-    <>
-      <Head>
-        <title>ComicHub</title>
-        <meta name="description" content="ComicHub is a simple gallery website for displaying comics. " />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <div className={'container-fluid ' + styles.banner}>
-        <nav>
-          <ul>
-            <li><strong>ComicHub</strong></li>
-          </ul>
-          <ul>
-            <li><a href="#">admin login</a></li>
-          </ul>
-        </nav>
-        <div className='container'>
-          <div className='row middle-xs middle-sm middle-md middle-lg'>
-            <div className='col-xs-4 col-sm-4 col-md-2 col-lg-2'>
-              <article>
-                <img src="/favicon.ico" alt="" />
-              </article>
-            </div>
-            <div className='col-xs-8 col-sm-8 col-md-10 col-lg-10'>
-              <div className='box'>
-                <hgroup>
-                  <h1>(your name here) 'w'</h1>
-                  <h3>ComicHub is a website to show off all your comics! </h3>
-                </hgroup>
-                <ShowScoailMediaLists />
-              </div>
+// Index page do not use global layout, skipping layout
+Home.getLayout = (page) => page
+
+export default function Home({ comics }) {
+  return <>
+    <Head>
+      <title>ComicHub</title>
+      <meta name="description" content="ComicHub is a simple gallery website for displaying comics. " />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <link rel="icon" href="/favicon.ico" />
+    </Head>
+    <main>
+      <div className={`container-fluid ${styles.banner}`}>
+      <nav>
+        <ul>
+          <li><strong>ComicHub</strong></li>
+        </ul>
+        <ul>
+          <li><a href="#">admin login</a></li>
+        </ul>
+      </nav>
+      <div className='container'>
+        <div className='row middle-xs middle-sm middle-md middle-lg'>
+          <div className='col-xs-4 col-sm-4 col-md-2 col-lg-2'>
+            <article>
+              <img src="/favicon.ico" alt="" />
+            </article>
+          </div>
+          <div className='col-xs-8 col-sm-8 col-md-10 col-lg-10'>
+            <div className='box'>
+              <hgroup>
+                <h1>(your name here) 'w'</h1>
+                <h3>ComicHub is a website to show off all your comics! </h3>
+              </hgroup>
+              <ShowScoailMediaLists />
             </div>
           </div>
         </div>
       </div>
-      <main className='container'>
-        <DisplayComics comics={comics} />
-      </main>
-    </>
-  )
+    </div>
+    <div className={`container`}>
+      <DisplayComics comics={comics} />
+    </div>
+    </main>
+    
+  </>
 }
 
 function ShowScoailMediaLists() {
@@ -59,7 +63,7 @@ function ShowScoailMediaLists() {
   </>
 }
 
-function DisplayComics({comics}) {
+function DisplayComics({ comics }) {
   return <div className='row'>
     {comics.map((comic) => (
       <div key={comic.id} className={styles.comic + " col-xs-6 col-sm-6 col-md-4 col-lg-3"}>
@@ -76,7 +80,7 @@ function DisplayComics({comics}) {
 }
 
 // Pre-renders index page for SEO and speed up index loading speed.
-export async function getStaticProps(){
+export async function getStaticProps() {
   // todo: read backend URL from env
   const res = await fetch('http://localhost:5000/comic')
   const comics = await res.json()
